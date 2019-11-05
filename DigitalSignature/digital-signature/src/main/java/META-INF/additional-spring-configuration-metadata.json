@@ -1,0 +1,9 @@
+{"properties": [{
+  "name": "documents.filepath",
+  "type": "java.lang.String",
+  "description": "A description for 'documents.filepath'"
+},{
+  "name": "frontend.url",
+  "type": "java.lang.String",
+  "description": "A description for 'frontend.url'"
+}]}
