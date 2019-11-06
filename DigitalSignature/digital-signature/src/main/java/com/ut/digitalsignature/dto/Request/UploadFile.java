@@ -6,12 +6,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ut.digitalsignature.exceptions.ColumnValueNotFoundException;
+import com.ut.digitalsignature.exceptions.InvalidFileTypeException;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import lombok.Data;
 
-@Data
 public class UploadFile implements Serializable{
 
     /**
@@ -23,5 +23,22 @@ public class UploadFile implements Serializable{
     @JsonProperty(value = "file")
     @Valid
     private MultipartFile file;
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file){
+        if(file.getContentType().equals("image/png") || file.getContentType().equals("image/jpeg")){
+            this.file = file;
+        }
+        else{
+            throw new ColumnValueNotFoundException("File should be image jpg or png");
+        }
+    }
     
 }

@@ -13,10 +13,12 @@ import com.ut.digitalsignature.dto.Request.RegisterUser;
 import com.ut.digitalsignature.dto.Request.UploadFile;
 import com.ut.digitalsignature.dto.Response.ResponseField;
 import com.ut.digitalsignature.dto.Response.ResponseFile;
+import com.ut.digitalsignature.exceptions.ColumnValueNotFoundException;
 import com.ut.digitalsignature.models.DigiSignUser;
 import com.ut.digitalsignature.repositories.IGenericDao;
 import com.ut.digitalsignature.services.BulkSignService;
 import com.ut.digitalsignature.services.DigiSignDocsService;
+import com.ut.digitalsignature.services.FileService;
 import com.ut.digitalsignature.services.RegisterUserService;
 import com.ut.digitalsignature.services.SendDocumentService;
 
@@ -25,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +54,9 @@ public class DigisignController {
 
     @Autowired
     SendDocumentService senddocumentService;
+
+    @Autowired
+    FileService fs;
 
     @Autowired
     RegisterUserService registeruserService;
@@ -138,7 +144,7 @@ public class DigisignController {
 
     @CrossOrigin
     @PostMapping(path = "/test", consumes = "multipart/form-data")
-    public String digitest(@RequestPart("file") MultipartFile file) throws IllegalStateException, IOException
+    public String digitest(@ModelAttribute UploadFile file) throws IllegalStateException, IOException
     {
         // System.out.println(dao.findValueByColumns("email", "abc@abc.com", "name", "asdsads", "user_id", "admin@gmail.com"));
         
@@ -154,8 +160,8 @@ public class DigisignController {
         //     "13faaa",
         //     "complete"
         // );
-
-        return file.getContentType();
+        fs.saveImage(file.getFile()); 
+        return file.getFile().getContentType();
     }
 
 

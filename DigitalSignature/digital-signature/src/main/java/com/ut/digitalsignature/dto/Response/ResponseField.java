@@ -23,4 +23,28 @@ public class ResponseField implements Serializable {
     @JsonProperty(value = "notif", required = true)
     private String notif;
 
+    public ResponseFile<ResponseField> setInvalidFormat() {
+        this.setResult("30");
+        this.setNotif("Invalid Request Format");
+        return new ResponseFile<ResponseField>().getResponseFile(this);
+    }
+
+    public ResponseFile<ResponseField> setValueNotFound(String message) {
+        this.setResult("05");
+        this.setNotif(message);
+        return new ResponseFile<ResponseField>().getResponseFile(this);
+    }
+
+    public ResponseFile<ResponseField> setValueAlreadyExists(String message) {
+        this.setResult("14");
+        this.setNotif(message);
+        return new ResponseFile<ResponseField>().getResponseFile(this);
+    }
+
+	public ResponseFile<ResponseField> setFileTypeError(String message) {
+		this.setResult("08");
+        this.setNotif(message);
+        return new ResponseFile<ResponseField>().getResponseFile(this);
+	}
+
 }

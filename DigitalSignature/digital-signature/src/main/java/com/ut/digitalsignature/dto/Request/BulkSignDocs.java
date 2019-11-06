@@ -9,8 +9,6 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
-
 public class BulkSignDocs implements Serializable {
 
     /**

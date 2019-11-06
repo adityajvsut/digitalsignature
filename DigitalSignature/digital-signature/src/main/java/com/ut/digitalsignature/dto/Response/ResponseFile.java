@@ -19,5 +19,10 @@ public class ResponseFile< T > implements Serializable {
     @NotEmpty
     @JsonProperty(value = "JSONFile", required = true)
     private T JSONFile;
+
+    public ResponseFile<T> getResponseFile(T json){
+        this.setJSONFile(json);
+        return this;
+    }
     
 }
