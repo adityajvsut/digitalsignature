@@ -38,7 +38,7 @@ public class SendDocumentService {
   @Value("${documents.filepath}")
   String filePath;
 
-  public String sendDocument(DocumentJSONFile document, MultipartFile docu) throws IllegalStateException, IOException {
+  public void sendDocument(DocumentJSONFile document, MultipartFile docu) throws IllegalStateException, IOException {
     if(!dao.findValueByColumn("file_path",document.getDocument_id()+".pdf").isEmpty()) throw new ColumnValueNotFoundException("Document "+document.getDocument_id()+" already exists");
         
     List<DocumentReqSign> listusers = document.getReq_sign();
@@ -70,6 +70,5 @@ public class SendDocumentService {
       digisignDoc.setSign_status(false);
       dao.save(digisignDoc);
     }
-    return "recieved document";
-    }
+  }
 }

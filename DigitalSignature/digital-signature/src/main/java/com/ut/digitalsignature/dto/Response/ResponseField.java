@@ -45,6 +45,12 @@ public class ResponseField implements Serializable {
 		this.setResult("08");
         this.setNotif(message);
         return new ResponseFile<ResponseField>().getResponseFile(this);
+    }
+    
+    public ResponseFile<ResponseField> setSuccess() {
+		this.setResult("00");
+        this.setNotif("Success");
+        return new ResponseFile<ResponseField>().getResponseFile(this);
 	}
 
 }

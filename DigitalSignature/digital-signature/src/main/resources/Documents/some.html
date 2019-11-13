@@ -1,6 +1,6 @@
 <html>
   <head>
-    <script src="http://localhost:8000/build/pdf.js"></script>
+    <script src="http://10.15.15.65:8000/build/pdf.js"></script>
     <!-- <script src="http://mozilla.github.io/pdf.js/build/pdf.js"></script> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -17,12 +17,15 @@
       #pdf-total-pages{
         display: inline;
       }
+
     </style>
     <script>
       $(document).ready(function(){
         checkSigned();
           $("#processSign").click(function(){
               $("#myModal").modal('show');
+              $('.modal-dialog').draggable();
+              $('.modal-content').resizable({});
           });
           $("#sendotp").click(function(){
             document.getElementById("send-otpmodal").style.display = "none";
@@ -40,6 +43,9 @@
         }
             console.log(data);
             verifyotp(JSON.stringify(data));
+            document.getElementById("verifyotp").style.display = "none";
+            document.getElementById("signdraw").style.display = "block";
+
           });
           
       });
@@ -59,21 +65,22 @@
 
       function verifyotp(data){
 
-        var xhr = new XMLHttpRequest();
-        xhr.withCredentials = true;
+        // var xhr = new XMLHttpRequest();
+        // xhr.withCredentials = true;
 
-        xhr.onreadystatechange = function() {
-            console.log("hii");
-            if (this.readyState == 4 && this.status == 200) {
-              console.log(this.responseText);
-              signed();
-            }        
-        };
-        xhr.open("POST", "http://localhost:9012/digisign/verifyotp");
-        xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.setRequestHeader("Accept", "*/*");
-        xhr.send(data);
+        // xhr.onreadystatechange = function() {
+        //     console.log("hii");
+        //     if (this.readyState == 4 && this.status == 200) {
+        //       console.log(this.responseText);
+        //       signed();
+        //     }        
+        // };
+        // xhr.open("POST", "http://localhost:9012/digisign/verifyotp");
+        // xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
+        // xhr.setRequestHeader("Content-Type", "application/json");
+        // xhr.setRequestHeader("Accept", "*/*");
+        // xhr.send(data);
+        //signed();
 
         }
       function sendotp(email){
@@ -108,25 +115,26 @@
           }
         }
         var data = JSON.stringify(documentjson);
-        var xhr = new XMLHttpRequest();
-        xhr.withCredentials = true;
+        // var xhr = new XMLHttpRequest();
+        // xhr.withCredentials = true;
 
-        xhr.onreadystatechange = function() {
-            console.log("hii");
-            if (this.readyState == 4 && this.status == 200) {
+        // xhr.onreadystatechange = function() {
+        //     console.log("hii");
+        //     if (this.readyState == 4 && this.status == 200) {
               console.log(this.responseText);
               $("#myModal").modal('hide');
               
               alert("Signed");
               document.getElementById("processSign").style.display = "none";
-              location.reload();
-            }
-        };
-        xhr.open("POST", "http://localhost:9012/digisign/digisigndocs");
-        xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.setRequestHeader("Accept", "*/*");
-        xhr.send(data);
+              
+              //location.reload();
+        //     }
+        // };
+        // xhr.open("POST", "http://localhost:9012/digisign/digisigndocs");
+        // xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
+        // xhr.setRequestHeader("Content-Type", "application/json");
+        // xhr.setRequestHeader("Accept", "*/*");
+        // xhr.send(data);
       }
       function checkSigned(){
         documents = getParams(window.location.href);
@@ -185,6 +193,9 @@
               <button id = "veriotp" type="button" class="btn btn-primary">verify Otp</button>
             </form>
           </div>
+          <div id="signdraw"  style="display:none" class="modal-body">
+            <iframe src="./sign.html" width="400" height="600"></iframe>
+          </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
               
@@ -226,14 +237,14 @@
       };
 
       documents = getParams(window.location.href);
-
-    var url = 'http://localhost:8000/'+documents["document_id"]+".pdf";
+      // documents["document_id"]
+    var url = 'http://10.15.15.65:8000/agreement1.pdf';
     
     // Loaded via <script> tag, create shortcut to access PDF.js exports.
     var pdfjsLib = window['pdfjs-dist/build/pdf'];
     
     // The workerSrc property shall be specified.
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'http://localhost:8000/build/pdf.worker.js';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'http://10.15.15.65:8000/build/pdf.worker.js';
     
     var pdfDoc = null,
         pageNum = 1,

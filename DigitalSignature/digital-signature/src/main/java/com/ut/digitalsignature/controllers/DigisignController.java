@@ -1,8 +1,12 @@
 package com.ut.digitalsignature.controllers;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import javax.validation.Valid;
 
 import com.ut.digitalsignature.dto.Request.BulkSignDocs;
@@ -12,8 +16,6 @@ import com.ut.digitalsignature.dto.Request.JsonFile;
 import com.ut.digitalsignature.dto.Request.RegisterUser;
 import com.ut.digitalsignature.dto.Request.UploadFile;
 import com.ut.digitalsignature.dto.Response.ResponseField;
-import com.ut.digitalsignature.dto.Response.ResponseFile;
-import com.ut.digitalsignature.exceptions.ColumnValueNotFoundException;
 import com.ut.digitalsignature.models.DigiSignUser;
 import com.ut.digitalsignature.repositories.IGenericDao;
 import com.ut.digitalsignature.services.BulkSignService;
@@ -33,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,8 +51,6 @@ public class DigisignController {
         dao.setClazz(DigiSignUser.class);
     }
 
-    
-
     @Autowired
     SendDocumentService senddocumentService;
 
@@ -67,100 +66,105 @@ public class DigisignController {
     @Autowired
     DigiSignDocsService digisignService;
 
+    ResponseField responseField = new ResponseField();
+
     @PostMapping(path = "/senddocument", consumes = "multipart/form-data")
-    public String sendDocument(@RequestPart("jsonfield") JsonFile<DocumentJSONFile> document,
-            @RequestPart("file") MultipartFile file) throws IllegalStateException, IOException {        
-        return senddocumentService.sendDocument(document.getJSONFile(),file);
+    public void sendDocument(@RequestPart("jsonfield") JsonFile<DocumentJSONFile> document,
+            @RequestPart("file") MultipartFile file) throws Exception{
+        senddocumentService.sendDocument(document.getJSONFile(), file);
     }
 
     @PostMapping(path = "/registeruser", consumes = "multipart/form-data")
     public ResponseEntity<Object> registerUser(@Valid @RequestPart("jsonfield") JsonFile<RegisterUser> userDetails,
-            @Valid UploadFile file) throws IllegalStateException, IOException
-    {   
-        System.out.println(userDetails.getJSONFile());
-        registeruserService.registerUser(userDetails.getJSONFile(),file.getFile());
-        ResponseFile<ResponseField> responseFile = new ResponseFile<ResponseField>();
-        ResponseField responseField = new ResponseField();
-        responseField.setResult("00");
-        responseField.setNotif("Success");
-        responseFile.setJSONFile(responseField);
-        return new ResponseEntity<Object>(responseFile,HttpStatus.OK);
+            @Valid UploadFile file) throws Exception {
+        registeruserService.registerUser(userDetails.getJSONFile(), file.getFile());
+        return new ResponseEntity<Object>(responseField.setSuccess(), HttpStatus.OK);
     }
 
     @PostMapping(path = "/bulksign", consumes = "multipart/form-data")
     public String bulkSign(@RequestPart("jsonfield") JsonFile<BulkSignDocs> bulkDocs)
-            throws IllegalStateException, IOException
-    {
+            throws IllegalStateException, IOException {
         return bulksignService.bulkSign(bulkDocs.getJSONFile());
     }
 
     @CrossOrigin
     @PostMapping(path = "/bulksigndocs", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
     public void bulkSignDocs(@RequestBody JsonFile<BulkSignDocs> userDetails)
-            throws IllegalStateException, IOException
-    {
+            throws IllegalStateException, IOException {
         bulksignService.bulkSignDocs(userDetails.getJSONFile());
     }
 
-
     @CrossOrigin
     @PostMapping(path = "/digisigndocs", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
     public void digiSignDocs(@RequestBody JsonFile<DigiSignDocs> userDetails)
-            throws IllegalStateException, IOException
-    {
+            throws IllegalStateException, IOException {
         System.out.println(userDetails);
         digisignService.digiSignDocs(userDetails.getJSONFile());
     }
 
     @CrossOrigin
     @PostMapping(path = "/digisignsend", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
     public String digiSignSend(@RequestBody JsonFile<DigiSignDocs> userDetails)
-            throws IllegalStateException, IOException
-    {
+            throws IllegalStateException, IOException {
         return digisignService.digiSignSend(userDetails.getJSONFile());
     }
 
     @CrossOrigin
     @PostMapping(path = "/sendotp", consumes = "text/plain")
-    @ResponseStatus(HttpStatus.OK)
-    public void digiSignSendOtp(@RequestBody String email)
-            throws IllegalStateException, IOException
-    {
+    public void digiSignSendOtp(@RequestBody String email) throws IllegalStateException, IOException {
         digisignService.digiSignSendOtp(email);
     }
 
     @CrossOrigin
     @PostMapping(path = "/verifyotp", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
-    public String digiSignVerifyOtp(@RequestBody HashMap<String,String> otpDetails)
-            throws IllegalStateException, IOException
-    {
+    public String digiSignVerifyOtp(@RequestBody HashMap<String, String> otpDetails)
+            throws IllegalStateException, IOException {
         System.out.println(otpDetails);
         return digisignService.digiSignVerifyOtp(otpDetails);
     }
 
     @CrossOrigin
     @PostMapping(path = "/test", consumes = "multipart/form-data")
-    public String digitest(@ModelAttribute UploadFile file) throws IllegalStateException, IOException
-    {
-        // System.out.println(dao.findValueByColumns("email", "abc@abc.com", "name", "asdsads", "user_id", "admin@gmail.com"));
-        
+    public String digitest(@ModelAttribute UploadFile file) throws IllegalStateException, IOException {
+        // System.out.println(dao.findValueByColumns("email", "abc@abc.com", "name",
+        // "asdsads", "user_id", "admin@gmail.com"));
+
         // HttpHeaders headers = new HttpHeaders();
         // headers.set("Authorization","Basic YWRtaW46cGFzc3dvcmQ=");
         // System.out.println("Hii");
         // RestTemplate restTemplate = new RestTemplate();
         // HttpEntity<?> entity = new HttpEntity<>(headers);
         // restTemplate.exchange("http://localhost:9012/digisign/callback?id={id}&status={status}",
-        //     HttpMethod.GET,
-        //     entity,
-        //     String.class,
-        //     "13faaa",
-        //     "complete"
+        // HttpMethod.GET,
+        // entity,
+        // String.class,
+        // "13faaa",
+        // "complete"
         // );
-        fs.saveImage(file.getFile()); 
+        // fs.saveImage(file.getFile());
+        try {
+            String encryptionKeyString = "digisignsecret12";
+            String originalMessage = "abc@gmail.com";
+            byte[] encryptionKeyBytes = encryptionKeyString.getBytes();
+
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            Cipher cipher2 = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            SecretKey secretKey = new SecretKeySpec(encryptionKeyBytes, "AES");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+
+            byte[] encryptedMessageBytes = cipher.doFinal(originalMessage.getBytes());
+            String encr = Base64.getEncoder().encodeToString(encryptedMessageBytes);
+            System.out.println(encr);
+
+            cipher2.init(Cipher.DECRYPT_MODE, secretKey);
+            byte[] encrbytes= Base64.getDecoder().decode(encr);
+            byte[] decryptedMessageBytes = cipher2.doFinal(encrbytes);
+            String str = new String(decryptedMessageBytes);
+            System.out.println(str);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         return file.getFile().getContentType();
     }
 
@@ -180,7 +184,6 @@ public class DigisignController {
 
     @CrossOrigin
     @PostMapping(path = "/checkSigned", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
     public Boolean checkUserSignedDoc(@RequestBody JsonFile<BulkSignDocs> userDetails)
             throws IllegalStateException, IOException
     {
@@ -189,7 +192,6 @@ public class DigisignController {
 
     @CrossOrigin
     @PostMapping(path = "/checkUserSigned", consumes = "application/json")
-    @ResponseStatus(HttpStatus.OK)
     public Boolean checkUserSignedDocument(@RequestBody JsonFile<DigiSignDocs> userDetails)
             throws IllegalStateException, IOException
     {

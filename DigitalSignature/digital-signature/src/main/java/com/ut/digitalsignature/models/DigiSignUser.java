@@ -51,11 +51,12 @@ public class DigiSignUser implements Serializable{
     @CreationTimestamp
     private Date CreatedAt;
 
-    public void setUserDetails(RegisterUser userDetails){
+    public void setUserDetails(RegisterUser userDetails,String path){
         this.setName(userDetails.getName());
         this.setEmail(userDetails.getEmail());
         this.setMobile_number(userDetails.getMobile_number());
-        this.setUser_id(userDetails.getUser_id());      
+        this.setUser_id(userDetails.getUser_id());
+        this.setTtd_path(path);      
     }
 
 }

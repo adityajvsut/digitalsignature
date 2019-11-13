@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ut.digitalsignature.exceptions.ColumnValueNotFoundException;
-import com.ut.digitalsignature.exceptions.InvalidFileTypeException;
 
 import org.springframework.web.multipart.MultipartFile;
 
