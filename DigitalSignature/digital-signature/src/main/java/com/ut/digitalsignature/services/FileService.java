@@ -19,11 +19,16 @@ public class FileService {
     AesService aesService;
 
     public String saveImage(String fileName, MultipartFile file) throws Exception {
+        System.out.println("\n file type ="+file.getContentType());
         if(!(file.getContentType().equals("image/png") || file.getContentType().equals("image/jpeg"))){
             throw new InvalidFileTypeException("File should be image jpg or png");}
         String fileEncr = aesService.AesEncryption(fileName);  
         File savefile = new File(filePath+fileEncr);
-        savefile.mkdir();
+
+        System.out.println(filePath+fileEncr);
+        savefile.mkdirs();
+
+        System.out.println("file path: "+filePath+fileEncr+"/"+file.getOriginalFilename());
         file.transferTo(new File(filePath+fileEncr+"/"+file.getOriginalFilename()));
         return fileEncr+"/"+file.getOriginalFilename();
     }

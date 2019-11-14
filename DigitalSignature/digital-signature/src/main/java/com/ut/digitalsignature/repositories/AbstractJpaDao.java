@@ -51,7 +51,7 @@ public abstract class AbstractJpaDao< T extends Serializable > {
 
    @Transactional
    public void save( T entity ){
-      createSession().persist(entity);
+      createSession().save(entity);
    }
  
    @Transactional
