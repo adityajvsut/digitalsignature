@@ -59,13 +59,12 @@ public class RestExceptionHandler{
 
    @ExceptionHandler(value = InvalidFileTypeException.class)
    public ResponseEntity<Object> filetypeexception(InvalidFileTypeException exception) {
-      System.out.println("Hii");
       return new ResponseEntity<>(responseField.setFileTypeError(exception.getMessage()), HttpStatus.BAD_REQUEST);
    }
 
         @ExceptionHandler(value = CustomerAlreadyExistsException.class)
      public ResponseEntity<Object> alreadyexistexception(CustomerAlreadyExistsException exception) {
-        return new ResponseEntity<>(responseField.setValueAlreadyExists(exception.getMessage()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(responseField.setValueAlreadyExists(exception.getMessage()), HttpStatus.FORBIDDEN);
      }
     
 }
