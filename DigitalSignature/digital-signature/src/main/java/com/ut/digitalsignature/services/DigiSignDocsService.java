@@ -70,20 +70,33 @@ public class DigiSignDocsService {
             throw new UserDocumentNotFoundException("User "+userDetails.getEmail()+" is not linked for given agreement document "+userDetails.getDocument_id());
         }
         System.out.println(userDetails.getUserid());
-        String imagepath = dao.findEmail(userDetails.getEmail()).get(0).getTtd_path();
+
+        DigiSignDoc singeddoc =  digidao.findValueByColumns("user_id",userDetails.getUserid(),"user_email",userDetails.getEmail(),"file_path",userDetails.getDocument_id()+".pdf").get(0);
+
+
+        String imagepath = "";
+        if(singeddoc.getSign_type().equals("mt")) 
+            imagepath = dao.findEmail(userDetails.getEmail()).get(0).getTtd_path();
+        else
+            imagepath = dao.findEmail(userDetails.getEmail()).get(0).getSign_path();
         String pdfpath = userDetails.getDocument_id() + ".pdf";
+        int pageNumber = Integer.parseInt(singeddoc.getPage());
+        
+        float llx = Float.parseFloat(singeddoc.getLlx());
+        float lly = Float.parseFloat(singeddoc.getLly());
+        float urx = Float.parseFloat(singeddoc.getUrx());
+        float ury = Float.parseFloat(singeddoc.getUry());
+
         File file = new File(FilePath + pdfpath);
         PDDocument doc = PDDocument.load(file);
-        PDPage page = doc.getPage(14);
+        PDPage page = doc.getPage(pageNumber-1);
         PDImageXObject pdImage = PDImageXObject.createFromFile(FilePath + imagepath, doc);
         PDPageContentStream contentStream = new PDPageContentStream(doc, page, AppendMode.APPEND, true);
-        contentStream.drawImage(pdImage, 337, 430, 203, 70);
+        contentStream.drawImage(pdImage, llx, lly, urx-llx, ury-lly);
         contentStream.close();
         doc.save(FilePath + pdfpath);
-        doc.close();
-
+        doc.close();        
         
-        DigiSignDoc singeddoc =  digidao.findValueByColumns("user_id",userDetails.getUserid(),"user_email",userDetails.getEmail(),"file_path",userDetails.getDocument_id()+".pdf").get(0);
         System.out.println("Signed doc"+singeddoc);
         singeddoc.setSign_status(true);
         digidao.update(singeddoc);

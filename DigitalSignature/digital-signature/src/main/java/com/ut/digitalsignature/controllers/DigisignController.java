@@ -1,5 +1,6 @@
 package com.ut.digitalsignature.controllers;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.HashMap;
@@ -196,6 +197,15 @@ public class DigisignController {
             throws IllegalStateException, IOException
     {
         return digisignService.checkSingedornot(userDetails.getJSONFile());
+    }
+
+    @CrossOrigin
+    @PostMapping(path = "/saveUserSignImage")
+    public String saveSign(@RequestParam("file") MultipartFile file) throws Exception {
+        System.out.println("Entered" + file); 
+        fs.saveImage("hiii",file);
+
+        return "uploaded";
     }
 
 
