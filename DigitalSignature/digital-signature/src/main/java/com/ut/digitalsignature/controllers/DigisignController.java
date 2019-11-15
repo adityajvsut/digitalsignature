@@ -203,7 +203,10 @@ public class DigisignController {
     @PostMapping(path = "/saveUserSignImage")
     public String saveSign(@RequestParam("file") MultipartFile file) throws Exception {
         System.out.println("Entered" + file); 
-        fs.saveImage("hiii",file);
+        String path = fs.saveImage("hiii",file);
+        DigiSignUser dsu = dao.findValueByColumn("email", "customer1@gmail.com").get(0);
+        dsu.setSign_path(path);
+        dao.update(dsu);
 
         return "uploaded";
     }

@@ -60,7 +60,7 @@ public class DigiSignDocsService {
             throw new UserDocumentNotFoundException("User "+userDetails.getEmail()+" is not linked for given agreement document "+userDetails.getDocument_id());
         }
 
-        String url = "http://localhost:8000/some.html?email=" + userDetails.getEmail() + "&document_id=" + docidlist;
+        String url = "http://localhost:8000/documentsign.html?email=" + userDetails.getEmail() + "&document_id=" + docidlist;
         return url;
     }
 
