@@ -66,6 +66,11 @@ public class RestExceptionHandler{
      public ResponseEntity<Object> alreadyexistexception(CustomerAlreadyExistsException exception) {
         return new ResponseEntity<>(responseField.setValueAlreadyExists(exception.getMessage()), HttpStatus.FORBIDDEN);
      }
+
+     @ExceptionHandler(value = ColumnValueNotFoundException.class)
+     public ResponseEntity<Object> alreadyexistexception(ColumnValueNotFoundException exception) {
+        return new ResponseEntity<>(responseField.setValueAlreadyExists(exception.getMessage()), HttpStatus.FORBIDDEN);
+     }
     
 }
 // @Order(Ordered.HIGHEST_PRECEDENCE)
