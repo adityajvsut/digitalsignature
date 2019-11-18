@@ -47,6 +47,9 @@ public class DigiSignUser implements Serializable{
     @Column(name = "ttd_path", nullable = true)
     private String ttd_path;
 
+    @Column(name = "sign_path", nullable = true)
+    private String sign_path;
+
     @Column(name="CreatedAt",nullable = false)
     @CreationTimestamp
     private Date CreatedAt;

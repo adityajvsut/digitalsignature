@@ -64,6 +64,9 @@ public class DigiSignDoc implements Serializable{
 
     @Column(name = "sign_status", nullable = true)
     private Boolean sign_status;
+
+    @Column(name = "sign_type", nullable = true)
+    private String sign_type;
     
     @Column(name="CreatedAt",nullable = false)
     @CreationTimestamp

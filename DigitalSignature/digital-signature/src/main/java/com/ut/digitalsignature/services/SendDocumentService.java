@@ -67,6 +67,7 @@ public class SendDocumentService {
       digisignDoc.setLly(listusers.get(i).getLly());
       digisignDoc.setUrx(listusers.get(i).getUrx());
       digisignDoc.setUry(listusers.get(i).getUry());
+      digisignDoc.setSign_type(listusers.get(i).getAksi_ttd());
       digisignDoc.setSign_status(false);
       dao.save(digisignDoc);
     }

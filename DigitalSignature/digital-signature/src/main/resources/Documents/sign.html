@@ -825,19 +825,28 @@ function download(dataURL, filename) {
 
 // One could simply use Canvas#toBlob method instead, but it's just to show
 // that it can be done using result of SignaturePad#toDataURL.
-function dataURLToBlob(dataURL) {
-  // Code taken from https://github.com/ebidel/filer.js
-  var parts = dataURL.split(';base64,');
-  var contentType = parts[0].split(":")[1];
-  var raw = window.atob(parts[1]);
-  var rawLength = raw.length;
-  var uInt8Array = new Uint8Array(rawLength);
+// function dataURLToBlob(dataURL) {
+//   // Code taken from https://github.com/ebidel/filer.js
+//   var parts = dataURL.split(';base64,');
+//   var contentType = parts[0].split(":")[1];
+//   var raw = window.atob(parts[1]);
+//   var rawLength = raw.length;
+//   var uInt8Array = new Uint8Array(rawLength);
 
-  for (var i = 0; i < rawLength; ++i) {
-    uInt8Array[i] = raw.charCodeAt(i);
+//   for (var i = 0; i < rawLength; ++i) {
+//     uInt8Array[i] = raw.charCodeAt(i);
+//   }
+
+//   return new Blob([uInt8Array], { type: contentType });
+// }
+
+function dataURLtoBlob(dataurl) {
+  var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while(n--){
+    u8arr[n] = bstr.charCodeAt(n);
   }
-
-  return new Blob([uInt8Array], { type: contentType });
+  return new Blob([u8arr], {type:mime});
 }
 
 clearButton.addEventListener("click", function (event) {
@@ -866,8 +875,11 @@ savePNGButton.addEventListener("click", function (event) {
   if (signaturePad.isEmpty()) {
     alert("Please provide a signature first.");
   } else {
-    var dataURL = signaturePad.toDataURL();
-    download(dataURL, "signature.png");
+    // var dataURL = signaturePad.toDataURL();
+    // download(dataURL, "signature.png");
+    var data = signaturePad.toDataURL('image/png');
+  console.log(data);
+  uploadSignature('image/png');
   }
 });
 
@@ -876,7 +888,8 @@ saveJPGButton.addEventListener("click", function (event) {
     alert("Please provide a signature first.");
   } else {
     var dataURL = signaturePad.toDataURL("image/jpeg");
-    download(dataURL, "signature.jpg");
+    // download(dataURL, "signature.jpg");
+    uploadSignature('image/jpeg');
   }
 });
 
@@ -888,6 +901,49 @@ saveSVGButton.addEventListener("click", function (event) {
     download(dataURL, "signature.svg");
   }
 });
+
+function uploadSignature(mimetype) {
+  var dataurl = signaturePad.toDataURL(mimetype);
+  var blobdata = dataURLtoBlob(dataurl);
+
+  var fd = new FormData();
+  fd.append("file", blobdata, "customer1.jpeg");
+  
+  console.log("hiiiiiii");
+  console.log(fd);
+
+  var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+
+    xhr.onreadystatechange = function() {
+        console.log("hii");
+        if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
+        }
+    };
+    xhr.open("POST", "http://localhost:9012/digisign/saveUserSignImage");
+    xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
+    xhr.setRequestHeader("Accept", "*/*");
+    xhr.send(fd);
+
+	// /** will result in normal file upload with post name "signature" on target url **/
+  // $.ajax({
+  //   url: "http://localhost:9012/digisign/saveUserSignImage",
+  //   type: 'POST',
+  //   data: fd,
+  //   processData: false,
+  //   contentType: false,
+  //   dataType: 'html',
+  //   success: function (response) {
+  //     alert("AJAX OK: uploadSignature() ok");
+  //     console.log(response);
+  //   },
+  //   error: function (e) {
+  //     alert("AJAX ERROR: uploadSignature() fehlgeschlagen");
+  //     console.log(e);
+  //   }
+  // });
+}
 
   </script>
 </body>
