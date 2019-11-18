@@ -20,9 +20,12 @@ $(document).ready(function(){
             "otp" : document.getElementById("otp").value
     }
         console.log(data);
+        console.log(documents);
         verifyotp(JSON.stringify(data));
+        if(documents["ttd"]=="mt"){
         document.getElementById("verifyotp").style.display = "none";
         document.getElementById("signdraw").style.display = "block";
+        }
 
       });
       
@@ -43,21 +46,21 @@ $(document).ready(function(){
 
   function verifyotp(data){
 
-    // var xhr = new XMLHttpRequest();
-    // xhr.withCredentials = true;
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
 
-    // xhr.onreadystatechange = function() {
-    //     console.log("hii");
-    //     if (this.readyState == 4 && this.status == 200) {
-    //       console.log(this.responseText);
-    //       signed();
-    //     }        
-    // };
-    // xhr.open("POST", "http://localhost:9012/digisign/verifyotp");
-    // xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
-    // xhr.setRequestHeader("Content-Type", "application/json");
-    // xhr.setRequestHeader("Accept", "*/*");
-    // xhr.send(data);
+    xhr.onreadystatechange = function() {
+        console.log("hii");
+        if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
+          signed();
+        }        
+    };
+    xhr.open("POST", "http://localhost:9012/digisign/verifyotp");
+    xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.setRequestHeader("Accept", "*/*");
+    xhr.send(data);
     //signed();
 
     }
