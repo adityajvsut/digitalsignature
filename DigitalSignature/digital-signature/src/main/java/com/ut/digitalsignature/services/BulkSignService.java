@@ -58,18 +58,26 @@ public class BulkSignService {
         List<String> docidlist = userDetails.getDocument_id();
         String imagepath = dao.findValueByColumn("email",userDetails.getEmail()).get(0).getTtd_path();
         for (int i = 0; i < docidlist.size(); i++) {
+            DigiSignDoc singeddoc =  daodigi.findValueByColumn("user_email",userDetails.getEmail()).get(0);
+            
+            int pageNumber = Integer.parseInt(singeddoc.getPage());
+            float llx = Float.parseFloat(singeddoc.getLlx());
+            float lly = Float.parseFloat(singeddoc.getLly());
+            float urx = Float.parseFloat(singeddoc.getUrx());
+            float ury = Float.parseFloat(singeddoc.getUry());
+
             String pdfpath = userDetails.getDocument_id().get(i)+".pdf";
             File file = new File(FilePath+pdfpath);
             PDDocument doc = PDDocument.load(file);
-            PDPage page = doc.getPage(14);
+            PDPage page = doc.getPage(pageNumber-1);
             PDImageXObject pdImage = PDImageXObject.createFromFile(FilePath+imagepath, doc);
             PDPageContentStream contentStream = new PDPageContentStream(doc, page,AppendMode.APPEND,true);
-            contentStream.drawImage(pdImage, 82,430,160,70);
+            contentStream.drawImage(pdImage, llx, lly, urx-llx, ury-lly);
             contentStream.close();
             doc.save(FilePath+pdfpath);
             doc.close();
 
-            DigiSignDoc singeddoc =  daodigi.findValueByColumn("user_email",userDetails.getEmail()).get(0);
+            
             System.out.println("Signed doc"+singeddoc);
             singeddoc.setSign_status(true);
             daodigi.save(singeddoc);

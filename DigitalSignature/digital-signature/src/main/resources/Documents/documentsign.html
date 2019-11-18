@@ -88,8 +88,7 @@
       };
 
       documents = getParams(window.location.href);
-      // documents["document_id"]
-    var url = 'http://localhost:8000/agreement1.pdf';
+    var url = 'http://localhost:8000/'.concat(documents["document_id"]).concat('.pdf');
     
     // Loaded via <script> tag, create shortcut to access PDF.js exports.
     var pdfjsLib = window['pdfjs-dist/build/pdf'];
