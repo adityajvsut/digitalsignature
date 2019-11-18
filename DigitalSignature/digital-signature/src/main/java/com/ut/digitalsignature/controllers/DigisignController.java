@@ -193,7 +193,7 @@ public class DigisignController {
 
     @CrossOrigin
     @PostMapping(path = "/checkUserSigned", consumes = "application/json")
-    public Boolean checkUserSignedDocument(@RequestBody JsonFile<DigiSignDocs> userDetails)
+    public HashMap<String, String> checkUserSignedDocument(@RequestBody JsonFile<DigiSignDocs> userDetails)
             throws IllegalStateException, IOException
     {
         return digisignService.checkSingedornot(userDetails.getJSONFile());

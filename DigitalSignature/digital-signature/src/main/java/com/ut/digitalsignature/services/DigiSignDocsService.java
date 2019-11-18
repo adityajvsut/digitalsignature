@@ -76,9 +76,11 @@ public class DigiSignDocsService {
 
         String imagepath = "";
         if(singeddoc.getSign_type().equals("mt")) 
-            imagepath = dao.findEmail(userDetails.getEmail()).get(0).getTtd_path();
-        else
             imagepath = dao.findEmail(userDetails.getEmail()).get(0).getSign_path();
+        else
+            imagepath = dao.findEmail(userDetails.getEmail()).get(0).getTtd_path();
+
+        System.out.println(singeddoc.getSign_type() +"uid"+ imagepath);
         String pdfpath = userDetails.getDocument_id() + ".pdf";
         int pageNumber = Integer.parseInt(singeddoc.getPage());
         
@@ -146,12 +148,17 @@ public class DigiSignDocsService {
 
     }
     
-    public Boolean checkSingedornot(DigiSignDocs userDetails) {
+    public HashMap<String, String> checkSingedornot(DigiSignDocs userDetails) {
 
         if(digidao.findValueByColumns("user_id",userDetails.getUserid(),"user_email",userDetails.getEmail(),"file_path",userDetails.getDocument_id()+".pdf").isEmpty()){
             throw new UserDocumentNotFoundException("User "+userDetails.getEmail()+" is not linked for given agreement document "+userDetails.getDocument_id());
         }
-        return digidao.findValueByColumns("user_id",userDetails.getUserid(),"user_email",userDetails.getEmail(),"file_path",userDetails.getDocument_id()+".pdf").get(0).getSign_status();
+        DigiSignDoc dSignDoc =  digidao.findValueByColumns("user_id",userDetails.getUserid(),"user_email",userDetails.getEmail(),"file_path",userDetails.getDocument_id()+".pdf").get(0);
+        HashMap<String,String> responseData = new HashMap<>();
+        responseData.put("signType", dSignDoc.getSign_type());
+        responseData.put("signStatus", dSignDoc.getSign_status().toString());
+
+        return responseData;
     // return null;
     }
 
