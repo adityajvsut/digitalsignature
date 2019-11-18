@@ -59,8 +59,9 @@ public class DigiSignDocsService {
         if(digidao.findValueByColumns("user_id",userDetails.getUserid(),"user_email",userDetails.getEmail(),"file_path",userDetails.getDocument_id()+".pdf").isEmpty()){
             throw new UserDocumentNotFoundException("User "+userDetails.getEmail()+" is not linked for given agreement document "+userDetails.getDocument_id());
         }
-
-        String url = "http://localhost:8000/documentsign.html?email=" + userDetails.getEmail() + "&document_id=" + docidlist;
+        DigiSignDoc doc = digidao.findValueByColumns("user_id",userDetails.getUserid(),"user_email",userDetails.getEmail(),"file_path",userDetails.getDocument_id()+".pdf").get(0);
+       
+        String url = "http://localhost:8000/documentsign.html?email=" + userDetails.getEmail() + "&document_id=" + docidlist+"&sign_type="+doc.getSign_type();
         return url;
     }
 
