@@ -10,6 +10,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
     <style type="text/css">
       #page-bottom{
         text-align: center;
@@ -17,41 +19,84 @@
       #pdf-total-pages{
         display: inline;
       }
+      button[disabled] {
+        opacity:0.4;
+        cursor : not-allowed !important;
+      }
     </style>
     <script src = "http://localhost:8000/documentsign.js"></script>
+    
+    <script>
+      function otpBtnActivation(){
+
+        if(document.getElementById('otp').value.length!=4){
+            document.getElementById("veriotp").disabled = true;            
+        }else{
+            document.getElementById("veriotp").disabled = false;
+        }           
+      }
+    </script>
   </head>
 <body>
   <nav id="mainNav" class="navbar fixed-top navbar-light bg-light" style="width: 100%;">
-    <a class="navbar-brand" href="#">agreement-cb66433ff92e3-1901.pdf</a>
+    <a class="navbar-brand" href="#">Digital Signature</a>
     <div id="page-count-container">
         <button id="cancelLocation" class="btn btn-danger btn-sm">Cancel</button>
-        <button type="button" id="processSign" class="btn btn-success btn-sm">Proses</button>
+        <button type="button" id="processSign" class="btn btn-success btn-sm">Process</button>
     </div>
 </nav>
-<div id="myModal" class="modal fade" tabindex="-1">
+<div id="myModal" class="modal fade" tabindex="-1" style="text-align: center;">
   <div class="modal-dialog sendotp">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title">Verifying User</h5>
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h5 class="modal-title">Digital Signature</h5>
+              <button type="button" class="close" data-dismiss="modal" onclick="javascript:window.location.reload()">&times;</button>
           </div>
           <div id="send-otpmodal" class="modal-body">
-              <p>Need to verify your profile</p>
-              <p class="text-secondary"><small>Click on Send Otp button</small></p>
-              <button id = "sendotp" type="button" class="btn btn-primary">Send Otp</button>
+              
+              <input type="checkbox"  onchange="document.getElementById('sendotp').disabled = !this.checked;"/>Check here to indicate that you have read and agree to the terms of the UangTeman Loan Agreement</br>
+              <button id = "sendotp" type="button" class="btn btn-primary" disabled="disabled" style="margin-top: 20px;">Submit</button>
           </div>
-          <div id="verifyotp" style="display:none" class="modal-body" class = "verify">
-            <form name="otpform" id = "otpform">
-              Enter OTP : <input id="otp" type="text" name="otp"><br>
-              <button id = "veriotp" type="button" class="btn btn-primary">verify Otp</button>
+          <div id="verifyotp" style="display:none; " class="modal-body" class = "verify" >
+            <form name="otpform" id = "otpform" > 
+              An OTP is sent to registered Mobile Number for a loan aplication.</br>
+              <div style="margin-top: 20px;">
+              Enter OTP to verify your identity : <input id="otp" type="text" name="otp" onkeyup="otpBtnActivation()" maxlength="4"></br>
+            </div>
+              <div id="wrong_otp" style="color:red">
+                Your OTP number  does not match!!!
+            </div>
+            <div class="row" style="position: relative; margin-left: 30%;margin-top: 20px;">
+              <button id = "veriotp" type="button" class="btn btn-primary" type="submit" disabled>Verify</button>
+              <button id = "resendotp" type="button" class="btn btn-primary" type="submit" style="margin-left: 20px;">Resend Otp</button>
+            </div>
+
+            <div id="sendotpsuccess" style="display:none" >
+             Resend otp Successful.
+             </div>
+              
             </form>
           </div>
           <div id="signdraw"  style="display:none" class="modal-body">
-            <iframe src="./sign.html" width="400" height="600"></iframe>
+            <canvas id="signaturedraw" style="border:2px solid #000000;"></canvas>
+            <p>Sign Above</p>
+            <div class = "row text-center" style="position: relative; margin-left: 16%">
+            <button id = "signclear" type="button" class="btn btn-primary" style = "margin: 0 20px;">Clear</button>
+            <button id = "signsave" type="button" class="btn btn-primary" style = "margin: 0 20px;">Save</button>
+            <button id = "signsubmit" type="button" class="btn btn-primary" style = "margin: 0 20px;">Submit</button>
+            </div>
           </div>
+
+            <div id = "statussuccess">
+              Agreement signed Successfully.
+            </div>
+            <div id="statusfail" style="color:red;" class="modal-body">
+              Error occured. try again later
+            </div>
+
+
           <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-              
+              <button  type="button" class="btn btn-secondary" data-dismiss="modal" onclick="javascript:window.location.reload()">Cancel</button>    
           </div>
       </div>
   </div>
@@ -61,198 +106,14 @@
 
 
 <nav id="secondNav" class="navbar fixed-bottom navbar-light bg-light" style="width: 100%;">
-  <div class="button-prev">
-    <button class="btn btn-primary" id="prev">&lt; prev</button>
-        <button class="btn btn-primary" id="next">next &gt;</button>
-
-   <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-    
+  <div class="row button-prev col-12">
+    <div class="col-5"><button class="btn btn-primary" id="prev" style="width: 100px !important;" aria-expanded="false" type="button">Previous</button></div>
+    <div class="col-2 text-center ">Page: <span id="page_num"></span> / <span id="page_count"></span></div>
+    <!-- <button class="btn btn-primary" id="next">GoToPage</button> -->
+    <div class = "col-5"><button class=" btn btn-primary" id="next" style="position: absolute;right: 10px;top: 5px;  width: 100px;" type="button">Next</button></div>
   </div>
   
 </nav>
 </body>
-<script>
-    // If absolute URL from the remote server is provided, configure the CORS
-    // header on that server.
-    var getParams = function (url) {
-        var params = {};
-        var parser = document.createElement('a');
-        parser.href = url;
-        var query = parser.search.substring(1);
-        var vars = query.split('&');
-        for (var i = 0; i < vars.length; i++) {
-          var pair = vars[i].split('=');
-          params[pair[0]] = decodeURIComponent(pair[1]);
-        }
-        return params;
-      };
-
-      documents = getParams(window.location.href);
-    var url = 'http://localhost:8000/'.concat(documents["document_id"]).concat('.pdf');
-    
-    // Loaded via <script> tag, create shortcut to access PDF.js exports.
-    var pdfjsLib = window['pdfjs-dist/build/pdf'];
-    
-    // The workerSrc property shall be specified.
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'http://localhost:8000/build/pdf.worker.js';
-    
-    var pdfDoc = null,
-        pageNum = 1,
-        pageRendering = false,
-        pageNumPending = null,
-        scale = 1.5,
-        canvas = document.getElementById('the-canvas'),
-        ctx = canvas.getContext('2d');
-    
-    /**
-     * Get page info from document, resize canvas accordingly, and render page.
-     * @param num Page number.
-     */
-
-//      function renderPage(num,activeServiceOnEntry, pdfDocument, pageNumber, size) {
-//           var scratchCanvas = activeService.scratchCanvas;
-//           var PRINT_RESOLUTION = _app_options.AppOptions.get('printResolution') || 720;
-//           console.log(PRINT_RESOLUTION);
-//           var PRINT_UNITS = PRINT_RESOLUTION / 72.0;
-//           scratchCanvas.width = Math.floor(size.width * PRINT_UNITS);
-//           scratchCanvas.height = Math.floor(size.height * PRINT_UNITS);
-//           var width = Math.floor(size.width * _ui_utils.CSS_UNITS) + 'px';
-//           var height = Math.floor(size.height * _ui_utils.CSS_UNITS) + 'px';
-//           var ctx = scratchCanvas.getContext('2d');
-//           ctx.save();
-//           ctx.fillStyle = 'rgb(255, 255, 255)';
-//           ctx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
-//           ctx.restore();
-//           return pdfDocument.getPage(pageNumber).then(function (pdfPage) {
-//             var renderContext = {
-//               canvasContext: ctx,
-//               transform: [PRINT_UNITS, 0, 0, PRINT_UNITS, 0, 0],
-//               viewport: pdfPage.getViewport({
-//                 scale: 1,
-//                 rotation: size.rotation
-//               }),
-//               intent: 'print'
-//             };
-//             return pdfPage.render(renderContext).promise;
-//           }).then(function () {
-//             return {
-//               width: width,
-//               height: height
-//             };
-//           });
-// }
-    function renderPage(num) {
-      // Using promise to fetch the page
-      pageRendering = true;
-      pdfDoc.getPage(num).then(function(page) {
-        ori_width = page.getViewport(1).width;
-        ori_height = page.getViewport(1).height;
-        var scale_required = window.innerWidth / page.getViewport(1).width;
-        var viewport = page.getViewport(4);
-        canvas.height = viewport.height;
-				canvas.width = viewport.width;
-        canvas.style.width = '100%';
-        var renderContext = {
-					canvasContext: ctx,
-					viewport: viewport
-        };
-        
-
-    //     // var viewport = page.getViewport({1:1});
-    //     // console.log(viewport.width);
-    //     // scale = Math.min((canvas.height/viewport.height),(canvas.width/viewport.width));
-    //     // var viewport = page.getViewport({scale:scale});
-    //     // // canvas.height = "1000";
-    //     // // canvas.width = "3000";
-    //     // canvas.style.width = "100%";
-    //     // canvas.style.height = "100%";
-    //   // var desiredWidth = 100;
-    //   // var viewport = page.getViewport({ scale: 0.1, });
-    //   // console.log(viewport.width)
-    //   // var scale = desiredWidth / viewport.width;
-    //   // var scaledViewport = page.getViewport({ scale: scale, });
-    //   //         // // canvas.height = "1000";
-    //   //   // // canvas.width = "3000";
-    //   //   canvas.style.width = "100%";
-    //   //   canvas.style.height = "100%";
-    //   var PRINT_UNITS = 200 / 100.0;
-    //   console.log(window.devicePixelRatio);
-    //   canvas.width = Math.floor(800 * PRINT_UNITS);
-    //   canvas.height = Math.floor(1000 * PRINT_UNITS);
-    // // canvas.width = viewport.width;//keep high definition drawing canvas
-    // // canvas.style.width = canvas.width+'px';//de-z
-    
-    //     // Render PDF page into canvas context
-    //     var renderContext = {
-    //       canvasContext: ctx,
-    //       transform: [PRINT_UNITS, 0, 0, PRINT_UNITS, 0, 0],
-    //       viewport: page.getViewport({
-    //             scale: 1
-    //           }),
-    //     };
-        var renderTask = page.render(renderContext);
-    
-        // Wait for rendering to finish
-        renderTask.promise.then(function() {
-          pageRendering = false;
-          if (pageNumPending !== null) {
-            // New page rendering is pending
-            renderPage(pageNumPending);
-            pageNumPending = null;
-          }
-        });
-      });
-    
-    //   // Update page counters
-    //   document.getElementById('page_num').textContent = num;
-
-    }
-    
-    /**
-     * If another page rendering in progress, waits until the rendering is
-     * finised. Otherwise, executes rendering immediately.
-     */
-    function queueRenderPage(num) {
-      if (pageRendering) {
-        pageNumPending = num;
-      } else {
-        renderPage(num);
-      }
-    }
-    
-    /**
-     * Displays previous page.
-     */
-    function onPrevPage() {
-      if (pageNum <= 1) {
-        return;
-      }
-      pageNum--;
-      queueRenderPage(pageNum);
-    }
-    document.getElementById('prev').addEventListener('click', onPrevPage);
-    
-    /**
-     * Displays next page.
-     */
-    function onNextPage() {
-      if (pageNum >= pdfDoc.numPages) {
-        return;
-      }
-      pageNum++;
-      queueRenderPage(pageNum);
-    }
-    document.getElementById('next').addEventListener('click', onNextPage);
-    
-    /**
-     * Asynchronously downloads PDF.
-     */
-    pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
-      pdfDoc = pdfDoc_;
-      document.getElementById('page_count').textContent = pdfDoc.numPages;
-    
-      // Initial/first page rendering
-      renderPage(pageNum);
-    });
-</script>
+<script  src = "http://localhost:8000/pdfsign.js"></script>
 </html

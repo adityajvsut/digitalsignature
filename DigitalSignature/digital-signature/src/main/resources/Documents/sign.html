@@ -879,7 +879,7 @@ savePNGButton.addEventListener("click", function (event) {
     // download(dataURL, "signature.png");
     var data = signaturePad.toDataURL('image/png');
   console.log(data);
-  uploadSignature('image/png');
+  // uploadSignature('image/png');
   }
 });
 
@@ -888,6 +888,8 @@ saveJPGButton.addEventListener("click", function (event) {
     alert("Please provide a signature first.");
   } else {
     var dataURL = signaturePad.toDataURL("image/jpeg");
+    
+    console.log(dataURL);
     // download(dataURL, "signature.jpg");
     uploadSignature('image/jpeg');
   }

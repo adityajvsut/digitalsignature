@@ -201,10 +201,12 @@ public class DigisignController {
 
     @CrossOrigin
     @PostMapping(path = "/saveUserSignImage")
-    public String saveSign(@RequestParam("file") MultipartFile file) throws Exception {
+    public String saveSign(@RequestParam("file") MultipartFile file, @RequestParam("email") String email) throws Exception {
         System.out.println("Entered" + file); 
-        String path = fs.saveImage("hiii",file);
-        DigiSignUser dsu = dao.findValueByColumn("email", "customer1@gmail.com").get(0);
+        DigiSignUser dsu = dao.findValueByColumn("email", email).get(0);
+        System.out.println("filename " + file.getOriginalFilename());
+        String path = fs.saveImage(file.getOriginalFilename()+dsu.getName(),file);
+        
         dsu.setSign_path(path);
         dao.update(dsu);
 
