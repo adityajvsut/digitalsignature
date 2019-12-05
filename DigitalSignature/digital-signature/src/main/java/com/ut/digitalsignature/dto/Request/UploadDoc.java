@@ -6,10 +6,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ut.digitalsignature.exceptions.ColumnValueNotFoundException;
 
 import org.springframework.web.multipart.MultipartFile;
-
 
 public class UploadDoc implements Serializable{
 
@@ -31,13 +29,8 @@ public class UploadDoc implements Serializable{
         return file;
     }
 
-    public void setFile(MultipartFile file){
-        if(file.getContentType().equals("application/pdf")){
-            this.file = file;
-        }
-        else{
-            throw new ColumnValueNotFoundException("File should be image jpg or png");
-        }
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
     
 }

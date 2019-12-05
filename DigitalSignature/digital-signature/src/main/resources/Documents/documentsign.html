@@ -23,6 +23,11 @@
         opacity:0.4;
         cursor : not-allowed !important;
       }
+      input[type=number]::-webkit-inner-spin-button,
+      input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
     </style>
     <script src = "http://localhost:8000/documentsign.js"></script>
     
@@ -50,7 +55,7 @@
       <div class="modal-content">
           <div class="modal-header">
               <h5 class="modal-title">Digital Signature</h5>
-              <button type="button" class="close" data-dismiss="modal" onclick="javascript:window.location.reload()">&times;</button>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div id="send-otpmodal" class="modal-body">
               
@@ -96,24 +101,27 @@
 
 
           <div class="modal-footer">
-              <button  type="button" class="btn btn-secondary" data-dismiss="modal" onclick="javascript:window.location.reload()">Cancel</button>    
+              <button  type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>    
           </div>
       </div>
   </div>
 </div>
 <br/>
-<canvas id="the-canvas" class="document"></canvas>
+
+<div class="col-md-12" style="padding-top: 6%;padding-left: 10%;padding-right: 10%;padding-bottom: 12%;" id="the-container">
+<!-- <canvas id="the-canvas" class="document" style="border:1px solid #000000;"></canvas> -->
+</div>
 
 
 <nav id="secondNav" class="navbar fixed-bottom navbar-light bg-light" style="width: 100%;">
   <div class="row button-prev col-12">
     <div class="col-5"><button class="btn btn-primary" id="prev" style="width: 100px !important;" aria-expanded="false" type="button">Previous</button></div>
-    <div class="col-2 text-center ">Page: <span id="page_num"></span> / <span id="page_count"></span></div>
+    <div class="col-2 text-center row" >Page: <div id="page_num"><input type="number" id="p_num" value=1 onkeyup="gotoPage()" size="1" style = "width:30px" min="1" step="1"></div> of <span id="page_count"></span></div>
     <!-- <button class="btn btn-primary" id="next">GoToPage</button> -->
-    <div class = "col-5"><button class=" btn btn-primary" id="next" style="position: absolute;right: 10px;top: 5px;  width: 100px;" type="button">Next</button></div>
+    <div class="col-5"><button class="btn btn-primary" id="next" style="position: absolute;width: 100px !important;right:2px;" aria-expanded="false" type="button">Next</button></div>
   </div>
   
 </nav>
 </body>
 <script  src = "http://localhost:8000/pdfsign.js"></script>
-</html
+</html>

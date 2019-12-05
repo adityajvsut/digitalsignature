@@ -11,25 +11,23 @@ var getParams = function (url) {
 	return params;
 };
 
+
 $( document ).ready(function() {
 
-    documents = getParams(window.location.href);
-    delete documents["user"];
-    for(var key in documents){
-      console.log(documents[key]);
-      var listbtn = document.createElement("li");
-      var btn = document.createElement("BUTTON");
-      btn.innerHTML = documents[key];
-      var foo = document.getElementById("fooBar");
-  //Append the element in page (in span).  
-    foo.appendChild(listbtn);
-    listbtn.appendChild(btn);
-      }
-
-      console.log( "ready!" );
-  CheckSigned();
+    window.documents = getParams(window.location.href);
+    var doclist = documents["document_id"];
+    Array.from(JSON.parse(doclist)).forEach(buttonCreate);
+    CheckSigned();
 
 });
+
+function buttonCreate(value, index, array) {
+  var listbtn = document.createElement("li");
+  var btn = document.createTextNode(value);
+  var foo = document.getElementById("fooBar");
+  foo.appendChild(listbtn);
+  listbtn.appendChild(btn);
+}
 
 function signed(){
   documents = getParams(window.location.href);
@@ -53,7 +51,6 @@ function signed(){
 xhr.withCredentials = true;
 
 xhr.onreadystatechange = function() {
-    console.log("hii");
         if (this.readyState == 4 && this.status == 200) {
           document.getElementById("sign").style.display = "none";
     console.log(this.responseText);}

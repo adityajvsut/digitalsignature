@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 @SuppressWarnings("unchecked")
 
@@ -23,7 +24,7 @@ public abstract class AbstractJpaDao< T extends Serializable > {
       this.clazz = clazzToSet;
    }
  
-   public T findOne( final Long id ){
+   public T findOne( final T id ){
       return entityManager.find( clazz, id );
    }
 
@@ -37,7 +38,6 @@ public abstract class AbstractJpaDao< T extends Serializable > {
 
    public List<T> findValueByColumn(String Column,String Value){
       List<T> querylist = entityManager.createQuery("from "+clazz.getName()+" a where a."+Column+"= '"+Value+"'").getResultList();
-      // if(querylist.isEmpty()) throw new ColumnValueNotFoundException(Column + " " + Value + " does not exist"); 
       return querylist;
    }
  
@@ -45,13 +45,15 @@ public abstract class AbstractJpaDao< T extends Serializable > {
       List<T> querylist = entityManager.createQuery("from "+clazz.getName()+" a where a."+Column1+"='"+Value1+
                            "' and a."+Column2+"='"+Value2+
                            "' and a."+Column3+"='"+Value3+"'").getResultList();
-      // if(querylist.isEmpty()) throw new ColumnValueNotFoundException(Column1 + " " + Value1 + " does not exist"); 
       return querylist;
    }
 
-   @Transactional
    public void save( T entity ){
-      createSession().save(entity);
+      Session session = createSession().getSessionFactory().openSession();
+      Transaction transaction = session.beginTransaction();
+      session.save(entity);
+      transaction.commit();
+      session.close();
    }
  
    @Transactional
@@ -62,9 +64,13 @@ public abstract class AbstractJpaDao< T extends Serializable > {
    public void delete( T entity ){
       entityManager.remove( entity );
    }
-   // public void deleteById( Long entityId ){
-   //    T entity = getById( entityId );
-   //    delete( entity );
+
+   // public List<T> selectQuery(){
+   //    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+   //    CriteriaQuery<T> cquery = builder.createQuery(clazz);
+   //    Root<T> root = cquery.from(clazz);
+   //    cquery.multiselect(root.get(clazz.getClass());
+   //    List<T> result = em.createQuery(cq).getResultList();
    // }
 
    public Session createSession(){

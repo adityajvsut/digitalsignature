@@ -8,9 +8,9 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
+import org.springframework.stereotype.Component;
 
-@Data
+@Component
 public class DocumentReqSign implements Serializable {
 
     /**
@@ -64,5 +64,81 @@ public class DocumentReqSign implements Serializable {
     @NotEmpty
     @JsonProperty(value = "ury", required = true)
     private String ury;
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getAksi_ttd() {
+        return aksi_ttd;
+    }
+
+    public void setAksi_ttd(String aksi_ttd) {
+        this.aksi_ttd = aksi_ttd;
+    }
+
+    public String getPage() {
+        return page;
+    }
+
+    public void setPage(String page) {
+        this.page = page;
+    }
+
+    public String getLlx() {
+        return llx;
+    }
+
+    public void setLlx(String llx) {
+        this.llx = llx;
+    }
+
+    public String getLly() {
+        return lly;
+    }
+
+    public void setLly(String lly) {
+        this.lly = lly;
+    }
+
+    public String getUrx() {
+        return urx;
+    }
+
+    public void setUrx(String urx) {
+        this.urx = urx;
+    }
+
+    public String getUry() {
+        return ury;
+    }
+
+    public void setUry(String ury) {
+        this.ury = ury;
+    }
     
 }

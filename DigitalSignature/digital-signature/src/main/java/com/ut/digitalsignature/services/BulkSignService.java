@@ -54,7 +54,6 @@ public class BulkSignService {
     }
 
     public String bulkSignDocs(BulkSignDocs userDetails) throws IOException {
-        System.out.println(userDetails.getUserid());
         List<String> docidlist = userDetails.getDocument_id();
         String imagepath = dao.findValueByColumn("email",userDetails.getEmail()).get(0).getTtd_path();
         for (int i = 0; i < docidlist.size(); i++) {

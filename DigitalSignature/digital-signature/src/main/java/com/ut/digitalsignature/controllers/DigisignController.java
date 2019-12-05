@@ -1,21 +1,16 @@
 package com.ut.digitalsignature.controllers;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Base64;
 import java.util.HashMap;
 
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import javax.validation.Valid;
 
 import com.ut.digitalsignature.dto.Request.BulkSignDocs;
 import com.ut.digitalsignature.dto.Request.DigiSignDocs;
 import com.ut.digitalsignature.dto.Request.DocumentJSONFile;
+import com.ut.digitalsignature.dto.Request.DocumentReqSign;
 import com.ut.digitalsignature.dto.Request.JsonFile;
 import com.ut.digitalsignature.dto.Request.RegisterUser;
-import com.ut.digitalsignature.dto.Request.UploadFile;
 import com.ut.digitalsignature.dto.Response.ResponseField;
 import com.ut.digitalsignature.models.DigiSignUser;
 import com.ut.digitalsignature.repositories.IGenericDao;
@@ -30,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,18 +61,23 @@ public class DigisignController {
     @Autowired
     DigiSignDocsService digisignService;
 
+    @Autowired
+    DocumentReqSign dReqSign;
+
     ResponseField responseField = new ResponseField();
 
     @PostMapping(path = "/senddocument", consumes = "multipart/form-data")
-    public void sendDocument(@RequestPart("jsonfield") JsonFile<DocumentJSONFile> document,
+    public ResponseEntity<Object> sendDocument(@RequestPart("jsonfield") JsonFile<DocumentJSONFile> document,
             @RequestPart("file") MultipartFile file) throws Exception{
         senddocumentService.sendDocument(document.getJSONFile(), file);
+        return new ResponseEntity<Object>(responseField.setSuccess(), HttpStatus.OK);
     }
 
     @PostMapping(path = "/registeruser", consumes = "multipart/form-data")
     public ResponseEntity<Object> registerUser(@Valid @RequestPart("jsonfield") JsonFile<RegisterUser> userDetails,
-            @Valid UploadFile file) throws Exception {
-        registeruserService.registerUser(userDetails.getJSONFile(), file.getFile());
+    @RequestPart("file") MultipartFile file) throws Exception {
+        System.out.println(file.getOriginalFilename());
+        registeruserService.registerUser(userDetails.getJSONFile(), file);
         return new ResponseEntity<Object>(responseField.setSuccess(), HttpStatus.OK);
     }
 
@@ -125,8 +124,8 @@ public class DigisignController {
     }
 
     @CrossOrigin
-    @PostMapping(path = "/test", consumes = "multipart/form-data")
-    public String digitest(@ModelAttribute UploadFile file) throws IllegalStateException, IOException {
+    @GetMapping(path = "/test")
+    public String digitest() throws IllegalStateException, IOException {
         // System.out.println(dao.findValueByColumns("email", "abc@abc.com", "name",
         // "asdsads", "user_id", "admin@gmail.com"));
 
@@ -143,30 +142,34 @@ public class DigisignController {
         // "complete"
         // );
         // fs.saveImage(file.getFile());
-        try {
-            String encryptionKeyString = "digisignsecret12";
-            String originalMessage = "abc@gmail.com";
-            byte[] encryptionKeyBytes = encryptionKeyString.getBytes();
+        // try {
+        //     String encryptionKeyString = "digisignsecret12";
+        //     String originalMessage = "abc@gmail.com";
+        //     byte[] encryptionKeyBytes = encryptionKeyString.getBytes();
 
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            Cipher cipher2 = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            SecretKey secretKey = new SecretKeySpec(encryptionKeyBytes, "AES");
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        //     Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        //     Cipher cipher2 = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        //     SecretKey secretKey = new SecretKeySpec(encryptionKeyBytes, "AES");
+        //     cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-            byte[] encryptedMessageBytes = cipher.doFinal(originalMessage.getBytes());
-            String encr = Base64.getEncoder().encodeToString(encryptedMessageBytes);
-            System.out.println(encr);
+        //     byte[] encryptedMessageBytes = cipher.doFinal(originalMessage.getBytes());
+        //     String encr = Base64.getEncoder().encodeToString(encryptedMessageBytes);
+        //     System.out.println(encr);
 
-            cipher2.init(Cipher.DECRYPT_MODE, secretKey);
-            byte[] encrbytes= Base64.getDecoder().decode(encr);
-            byte[] decryptedMessageBytes = cipher2.doFinal(encrbytes);
-            String str = new String(decryptedMessageBytes);
-            System.out.println(str);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        return file.getFile().getContentType();
+        //     cipher2.init(Cipher.DECRYPT_MODE, secretKey);
+        //     byte[] encrbytes= Base64.getDecoder().decode(encr);
+        //     byte[] decryptedMessageBytes = cipher2.doFinal(encrbytes);
+        //     String str = new String(decryptedMessageBytes);
+        //     System.out.println(str);
+        // }
+        // catch(Exception e){
+        //     e.printStackTrace();
+        // }
+        // dReqSign.getData();
+        DigiSignUser digiSignUser = new DigiSignUser();
+        digiSignUser.setEmail("customertest@gmail.com");
+        System.out.println(dao.findOne(digiSignUser));
+        return "Done";
     }
 
 

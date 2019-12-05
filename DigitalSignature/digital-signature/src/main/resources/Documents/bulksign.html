@@ -14,17 +14,37 @@
       }
       ul {
         list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      ul li {
+        cursor: pointer;
+        position: relative;
+        padding: 12px 8px 12px 40px;
+        background: #eee;
+        font-size: 18px;
+        transition: 0.2s;
+
+        /* make the list items unselectable */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      ul li:nth-child(odd) {
+        background: #f9f9f9;
       }
     </style>
     <script src = "http://localhost:8000/bulksign.js"></script>
 </head>
 <body>
-  <nav id="mainNav" class="navbar fixed-top navbar-light bg-light" style="width: 100%;">
-    <a class="navbar-brand" href="#">Agreements Bulk Sign</a>
+  <nav id="mainNav" class="navbar fixed-top navbar-light" style="width: 100%;background-color: #F6F6F6;">
+    <!-- <a class="navbar-brand" href="#">Agreements Bulk Sign</a> -->
     <!-- <div id="page-count-container">
         <button id="cancelLocation" class="btn btn-danger btn-sm">Cancel</button>
         <button id="prosesSign" class="btn btn-success btn-sm" >Proses</button>
     </div> -->
+    <img src="https://uangteman.com/assets/frontend/statics/v4/images/rebranding/logo_rebranding.png"/>
 </nav>
 <br/>
 <br/>
@@ -33,7 +53,7 @@
 <ul id="fooBar">
 
   </ul>
-<nav id="secondNav" class="navbar fixed-bottom navbar-light bg-light" style="width: 100%;">
+<nav id="secondNav" class="navbar fixed-bottom navbar-light" style="width: 100%;background-color: #005EB8;">
   <div class="button-prev">
     <button class="btn btn-primary" id="cancel"> Cancel</button>
         <button class="btn btn-primary" type="button" onclick="signed()" id="sign">Sign</button>

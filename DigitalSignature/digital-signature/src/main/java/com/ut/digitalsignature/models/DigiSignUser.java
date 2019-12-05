@@ -15,12 +15,9 @@ import com.ut.digitalsignature.dto.Request.RegisterUser;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import lombok.Data;
-
 @Entity
 @Table(name = "DigiSignUser")
 @JsonIgnoreProperties(value = {"CreatedAt"}, allowGetters = true)
-@Data
 public class DigiSignUser implements Serializable{
 
     /**
@@ -60,6 +57,74 @@ public class DigiSignUser implements Serializable{
         this.setMobile_number(userDetails.getMobile_number());
         this.setUser_id(userDetails.getUser_id());
         this.setTtd_path(path);      
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getMobile_number() {
+        return mobile_number;
+    }
+
+    public void setMobile_number(String mobile_number) {
+        this.mobile_number = mobile_number;
+    }
+
+    public String getTtd_path() {
+        return ttd_path;
+    }
+
+    public void setTtd_path(String ttd_path) {
+        this.ttd_path = ttd_path;
+    }
+
+    public String getSign_path() {
+        return sign_path;
+    }
+
+    public void setSign_path(String sign_path) {
+        this.sign_path = sign_path;
+    }
+
+    public Date getCreatedAt() {
+        return CreatedAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        CreatedAt = createdAt;
     }
 
 }

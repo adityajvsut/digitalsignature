@@ -49,10 +49,10 @@ $(document).ready(function(){
         verifyotp(JSON.stringify(data));
         console.log("completed otp verif");
         document.getElementById("signsubmit").style.display = "none";
-        // if(documents["ttd"]=="mt"){
-        // document.getElementById("verifyotp").style.display = "none";
-        // document.getElementById("signdraw").style.display = "block";
-        // }
+        if(documents["ttd"]=="mt"){
+        document.getElementById("verifyotp").style.display = "none";
+        document.getElementById("signdraw").style.display = "block";
+        }
 
       });
 
@@ -85,9 +85,9 @@ $(document).ready(function(){
         //signed();
           }
       });
-      $("#signsubmit").click(function(){
-        signed();
-      });
+      // $("#signsubmit").click(function(){
+      //   signed();
+      // });
       
   });
 

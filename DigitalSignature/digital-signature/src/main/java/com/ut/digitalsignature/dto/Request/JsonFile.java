@@ -7,9 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
 
-@Data
 public class JsonFile<T> implements Serializable{
 
     /**
@@ -21,6 +19,18 @@ public class JsonFile<T> implements Serializable{
     @JsonProperty(value = "JSONFile", required = true)
     @Valid
     private T JSONFile;
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public T getJSONFile() {
+        return JSONFile;
+    }
+
+    public void setJSONFile(T jSONFile) {
+        JSONFile = jSONFile;
+    }
     
     
 }

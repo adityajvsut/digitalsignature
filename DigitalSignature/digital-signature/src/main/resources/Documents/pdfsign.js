@@ -14,77 +14,51 @@
       };
 
       documents = getParams(window.location.href);
-    var url = 'http://localhost:8000/'.concat(documents["document_id"]).concat('.pdf');
+    var url = 'http://10.15.15.65:8000/'.concat(documents["document_id"]).concat('.pdf');
     
     // Loaded via <script> tag, create shortcut to access PDF.js exports.
     var pdfjsLib = window['pdfjs-dist/build/pdf'];
     
     // The workerSrc property shall be specified.
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'http://localhost:8000/build/pdf.worker.js';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'http://10.15.15.65:8000/build/pdf.worker.js';
     
-    var pdfDoc = null,
-        pageNum = 1,
-        pageRendering = false,
-        pageNumPending = null,
-        scale = 1.5,
-        canvas = document.getElementById('the-canvas'),
-        ctx = canvas.getContext('2d');
-    
-    /**
-     * Get page info from document, resize canvas accordingly, and render page.
-     * @param num Page number.
-     */
+var pdfDoc = null,
+pageNum = 1,
+pageRendering = true,
+pageNumPending = null,
+scale = 1.5
 
-//      function renderPage(num,activeServiceOnEntry, pdfDocument, pageNumber, size) {
-//           var scratchCanvas = activeService.scratchCanvas;
-//           var PRINT_RESOLUTION = _app_options.AppOptions.get('printResolution') || 720;
-//           console.log(PRINT_RESOLUTION);
-//           var PRINT_UNITS = PRINT_RESOLUTION / 72.0;
-//           scratchCanvas.width = Math.floor(size.width * PRINT_UNITS);
-//           scratchCanvas.height = Math.floor(size.height * PRINT_UNITS);
-//           var width = Math.floor(size.width * _ui_utils.CSS_UNITS) + 'px';
-//           var height = Math.floor(size.height * _ui_utils.CSS_UNITS) + 'px';
-//           var ctx = scratchCanvas.getContext('2d');
-//           ctx.save();
-//           ctx.fillStyle = 'rgb(255, 255, 255)';
-//           ctx.fillRect(0, 0, scratchCanvas.width, scratchCanvas.height);
-//           ctx.restore();
-//           return pdfDocument.getPage(pageNumber).then(function (pdfPage) {
-//             var renderContext = {
-//               canvasContext: ctx,
-//               transform: [PRINT_UNITS, 0, 0, PRINT_UNITS, 0, 0],
-//               viewport: pdfPage.getViewport({
-//                 scale: 1,
-//                 rotation: size.rotation
-//               }),
-//               intent: 'print'
-//             };
-//             return pdfPage.render(renderContext).promise;
-//           }).then(function () {
-//             return {
-//               width: width,
-//               height: height
-//             };
-//           });
-// }
-    function renderPage(num) {
-      // Using promise to fetch the page
-      pageRendering = true;
+var renderTask = null;
+
+
+function renderPage(num) {
+  if( $('#document').length )
+  {
+    document.getElementById("document").remove();
+  }
+  var canvas = document.createElement('canvas');
+  canvas.setAttribute("id","document");
+    canvas.style.cssText = 'border:1px solid #000000;';
+      ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Using promise to fetch the pag
       pdfDoc.getPage(num).then(function(page) {
+        console.log(num);
+        var container = document.getElementById('the-container');
         ori_width = page.getViewport(1).width;
         ori_height = page.getViewport(1).height;
-        var scale_required = window.innerWidth / page.getViewport(1).width;
-        var viewport = page.getViewport(4);
+        // var scale_required = window.innerWidth / page.getViewport(1).width;
+        var viewport = page.getViewport(0.5);
+        viewport = page.getViewport(container.clientWidth/viewport.width);
         canvas.height = viewport.height;
 				canvas.width = viewport.width;
         canvas.style.width = '100%';
+        container.appendChild(canvas);
         var renderContext = {
 					canvasContext: ctx,
 					viewport: viewport
         };
-        
         var renderTask = page.render(renderContext);
-    
         // Wait for rendering to finish
         renderTask.promise.then(function() {
           pageRendering = false;
@@ -95,27 +69,40 @@
           }
         });
       });
-    
-    //   // Update page counters
-      document.getElementById('page_num').textContent = num;
-
+        //   // Update page
     }
-    
-    /**
-     * If another page rendering in progress, waits until the rendering is
-     * finised. Otherwise, executes rendering immediately.
+        /**    * If another page rendering in progress, waits until the rendering is
+     * finised. Otherwise, executes  immediately.
      */
     function queueRenderPage(num) {
       if (pageRendering) {
         pageNumPending = num;
       } else {
         renderPage(num);
+        document.getElementById('p_num').value = num;
       }
     }
     
     /**
      * Displays previous page.
      */
+
+    function gotoPage(){
+      var page_num = parseInt(document.getElementById("p_num").value);
+      var page_count = parseInt(document.getElementById('page_count').textContent);
+      if(page_num>page_count || page_num==null || page_num<1){
+        console.log(page_num);
+        console.log("Hii");
+        queueRenderPage(pageNum);
+      }
+      else{
+        pageNum = parseInt(page_num);
+        queueRenderPage(parseInt(page_num));
+        
+      }
+    }
+
+
     function onPrevPage() {
       if (pageNum <= 1) {
         return;
@@ -137,9 +124,31 @@
     }
     document.getElementById('next').addEventListener('click', onNextPage);
     
+    function reloadPage() {
+      pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+        pdfDoc = pdfDoc_;
+        document.getElementById('page_count').textContent = pdfDoc.numPages;
+        // Initial/first page rendering
+        renderPage(pageNum);
+
+      });
+    }
+    $("#signsubmit").click(function(){
+      //signed();
+      $("#myModal").modal('hide');
+      
+      reloadPage();
+
+    });
+    
     /**
      * Asynchronously downloads PDF.
      */
+//     $('#the-container').each(function() {
+// var pdfDiv = $(this);
+// var pdfUrl = 'http://localhost:8000/agreement1.pdf';
+// renderPdf(pdfUrl, pdfDiv);
+// });
     pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
       pdfDoc = pdfDoc_;
       document.getElementById('page_count').textContent = pdfDoc.numPages;

@@ -30,9 +30,9 @@ public class RegisterUserService {
   DigiSignUser digiSignUser = new DigiSignUser();
 
   public void registerUser(RegisterUser userDetails, MultipartFile signFile) throws Exception{
+      String path = fileService.saveImage(userDetails.getEmail(), signFile);
       if(!dao.findValueByColumns("user_id",userDetails.getUser_id(),"email",userDetails.getEmail(),
       "name",userDetails.getName()).isEmpty())throw new CustomerAlreadyExistsException("Customer Already Exists");
-      String path = fileService.saveImage(userDetails.getEmail(), signFile);
       digiSignUser.setUserDetails(userDetails,path);
       dao.save(digiSignUser);
     }

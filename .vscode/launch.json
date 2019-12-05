@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DigitalSignatureApplication",
+            "request": "launch",
+            "mainClass": "com.ut.digitalsignature.DigitalSignatureApplication",
+            "projectName": "digital-signature"
+        }
+    ]
+}

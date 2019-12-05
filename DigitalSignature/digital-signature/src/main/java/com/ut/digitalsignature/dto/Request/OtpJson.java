@@ -9,9 +9,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Data;
 
-@Data
 public class OtpJson implements Serializable {
 
     /**
@@ -30,5 +28,25 @@ public class OtpJson implements Serializable {
     @Size(min = 4,max = 4)
     @JsonProperty(value = "otp", required = true)
     private String otp;
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
 
 }

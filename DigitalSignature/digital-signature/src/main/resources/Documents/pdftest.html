@@ -1,0 +1,85 @@
+<html>
+  <head>
+        <script src="http://localhost:8000/build/pdf.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+  </head>
+
+  <body>
+
+    <button>
+      Simulate resize
+    </button>
+    <div data-pdf="http://localhost:8000/agreement1.pdf"></div>
+
+  </body>
+  <script>
+      
+$(function() {
+
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'http://localhost:8000/build/pdf.worker.js';
+
+/* Generate scaled page's canvas */
+var generatePageCanvas = function(pdfDiv, page) {
+  var canvas = document.createElement('canvas');
+  var divWidth = pdfDiv.width();
+  var pageWidth = page.getViewport(1).width;
+  var renderContext = {
+    canvasContext: canvas.getContext('2d'),
+    viewport: page.getViewport(divWidth / pageWidth)
+  };
+
+  canvas.height = renderContext.viewport.height;
+  canvas.width = renderContext.viewport.width;
+  page.render(renderContext);
+
+  return canvas;
+}
+
+/* Render a PDF's page, with resize event */
+var renderPage = function(pdfDiv, page) {
+  var canvas = generatePageCanvas(pdfDiv, page);
+  pdfDiv.append(canvas);
+
+  $(window).resize(() => {
+    var resizedCanvas = generatePageCanvas(pdfDiv, page);
+    canvas.replaceWith(resizedCanvas);
+    canvas = resizedCanvas;
+  });
+};
+
+/* Render a PDF file */
+var renderPdf = function(pdfUrl, pdfDiv) {
+        pdfjsLib.getDocument(pdfUrl).promise.then(pdfDoc => {
+    for (var num = 1; num <= pdfDoc.numPages; num++) {
+      pdfDoc.getPage(num).then(page => {
+        renderPage(pdfDiv, page);
+      });
+    }
+  });
+};
+
+/* Search and render data-pdf attributes */
+$('div[data-pdf]').each(function() {
+  var pdfDiv = $(this);
+  var pdfUrl = pdfDiv.data('pdf');
+  pdfDiv.css('overflow', 'auto')
+    .css('max-height', '180px');
+  renderPdf(pdfUrl, pdfDiv);
+});
+
+/* Simulate window resize event */
+$('button').click(function() {
+  var i = 400;
+  var interval = setInterval(() => {
+    i += 20;
+    document.body.style.width = i + "px";
+    window.dispatchEvent(new Event('resize'));
+  }, 250);
+  setTimeout(() => {
+    clearInterval(interval);
+  }, 1000);
+});
+
+});
+  </script>
+</html>

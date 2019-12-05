@@ -70,7 +70,6 @@ public class DigiSignDocsService {
         if(digidao.findValueByColumns("user_id",userDetails.getUserid(),"user_email",userDetails.getEmail(),"file_path",userDetails.getDocument_id()+".pdf").isEmpty()){
             throw new UserDocumentNotFoundException("User "+userDetails.getEmail()+" is not linked for given agreement document "+userDetails.getDocument_id());
         }
-        System.out.println(userDetails.getUserid());
 
         DigiSignDoc singeddoc =  digidao.findValueByColumns("user_id",userDetails.getUserid(),"user_email",userDetails.getEmail(),"file_path",userDetails.getDocument_id()+".pdf").get(0);
 
