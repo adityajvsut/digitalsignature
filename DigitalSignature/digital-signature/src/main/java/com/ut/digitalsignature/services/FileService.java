@@ -30,11 +30,11 @@ public class FileService {
     }
 
     public String savefile(String fileName, MultipartFile file) throws Exception{
-        String fileEncr = aesService.AesEncryption(fileName);  
-        File savefile = new File(filePath+fileEncr);
-        savefile.mkdirs();
-        file.transferTo(new File(filePath+fileEncr+"/"+file.getOriginalFilename()));
-        return fileEncr+"/"+file.getOriginalFilename();
+        // String fileEncr = aesService.AesEncryption(fileName);  
+        // File savefile = new File(filePath+fileEncr);
+        // savefile.mkdirs();
+        file.transferTo(new File(filePath+file.getOriginalFilename()));
+        return file.getOriginalFilename();
     } 
 
       

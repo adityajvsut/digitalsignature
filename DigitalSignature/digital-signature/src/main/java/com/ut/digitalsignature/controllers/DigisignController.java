@@ -95,6 +95,12 @@ public class DigisignController {
     }
 
     @CrossOrigin
+    @PostMapping(path = "/signstatus", consumes = "application/json")
+    public void signStatus(){
+        
+    }
+
+    @CrossOrigin
     @PostMapping(path = "/digisigndocs", consumes = "application/json")
     public void digiSignDocs(@RequestBody JsonFile<DigiSignDocs> userDetails)
             throws IllegalStateException, IOException {
@@ -208,7 +214,7 @@ public class DigisignController {
         System.out.println("Entered" + file); 
         DigiSignUser dsu = dao.findValueByColumn("email", email).get(0);
         System.out.println("filename " + file.getOriginalFilename());
-        String path = fs.saveImage(file.getOriginalFilename()+dsu.getName(),file);
+        String path = fs.saveImage(file.getOriginalFilename(),file);
         
         dsu.setSign_path(path);
         dao.update(dsu);

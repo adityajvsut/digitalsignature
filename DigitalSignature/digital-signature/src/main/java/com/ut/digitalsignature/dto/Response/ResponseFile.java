@@ -6,6 +6,9 @@ import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
+
+@Data
 public class ResponseFile< T > implements Serializable {
 
     /**
@@ -26,12 +29,12 @@ public class ResponseFile< T > implements Serializable {
         return serialVersionUID;
     }
 
-    public T getJSONFile() {
-        return JSONFile;
-    }
+    // public T getJSONFile() {
+    //     return JSONFile;
+    // }
 
-    public void setJSONFile(T jSONFile) {
-        JSONFile = jSONFile;
-    }
+    // public void setJSONFile(T jSONFile) {
+    //     this.JSONFile = jSONFile;
+    // }
     
 }

@@ -45,12 +45,14 @@ public class BulkSignService {
     public String bulkSign(BulkSignDocs userDetails)
             throws IllegalStateException, IOException {
         List<String> docidlist = userDetails.getDocument_id();
-        String url = url1+"user="+userDetails.getEmail()+"&";
+        String url = url1+"user="+userDetails.getEmail()+"&document_id=[";
+        //document_id=["agreement1","agreement2"]
         for (int i = 0; i < docidlist.size(); i++) {
-            url += "document"+String.valueOf(i)+"=";
-            url += docidlist.get(i)+"&";
+            url += "\""+docidlist.get(i)+"\",";
         }
-        return url.substring(0, url.length()-1);
+        url = url.substring(0, url.length()-1);
+        url += "]";
+        return url;
     }
 
     public String bulkSignDocs(BulkSignDocs userDetails) throws IOException {

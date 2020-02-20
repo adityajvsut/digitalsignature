@@ -6,7 +6,9 @@ import javax.validation.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Data;
 
+@Data
 public class ResponseField implements Serializable {
     /**
     *
@@ -46,6 +48,8 @@ public class ResponseField implements Serializable {
     }
     
     public ResponseFile<ResponseField> setSuccess() {
+        System.out.println("Hii");
+        System.out.println(this.toString());
 		this.setResult("00");
         this.setNotif("Success");
         return new ResponseFile<ResponseField>().getResponseFile(this);
@@ -55,20 +59,20 @@ public class ResponseField implements Serializable {
         return serialVersionUID;
     }
 
-    public String getResult() {
-        return result;
-    }
+    // public String getResult() {
+    //     return result;
+    // }
 
-    public void setResult(String result) {
-        this.result = result;
-    }
+    // public void setResult(String result) {
+    //     this.result = result;
+    // }
 
-    public String getNotif() {
-        return notif;
-    }
+    // public String getNotif() {
+    //     return notif;
+    // }
 
-    public void setNotif(String notif) {
-        this.notif = notif;
-    }
+    // public void setNotif(String notif) {
+    //     this.notif = notif;
+    // }
 
 }

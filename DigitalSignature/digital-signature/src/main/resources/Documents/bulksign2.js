@@ -10,70 +10,67 @@ var getParams = function (url) {
 	}
 	return params;
 };
-
-
+​
 $( document ).ready(function() {
-
-    window.documents = getParams(window.location.href);
-    var doclist = documents["document_id"];
-    console.log(doclist);
-    Array.from(JSON.parse(doclist)).forEach(buttonCreate);
-    CheckSigned();
-
+​
+    documents = getParams(window.location.href);
+    delete documents["user"];
+    for(var key in documents){
+      console.log(documents[key]);
+      var listbtn = document.createElement("li");
+      var btn = document.createElement("BUTTON");
+      btn.innerHTML = documents[key];
+      var foo = document.getElementById("fooBar");
+  //Append the element in page (in span).  
+    foo.appendChild(listbtn);
+    listbtn.appendChild(btn);
+      }
+​
+      console.log( "ready!" );
+  CheckSigned();
+​
 });
-
-function buttonCreate(value, index, array) {
-  var listbtn = document.createElement("li");
-  var btn = document.createTextNode(value);
-  var foo = document.getElementById("fooBar");
-  foo.appendChild(listbtn);
-  listbtn.appendChild(btn);
-}
-
+​
 function signed(){
   documents = getParams(window.location.href);
   lender = documents['user'];
-  console.log(documents["document_id"]);
+  console.log(lender);
   delete documents["user"];
+  doculist = [];
+  for(var key in documents){
+    doculist.push(documents[key]);
+  }
   documentjson = {
 	"JSONFile" : {
 		"userid" : "admin@gmail.com",
 		"email" : lender,
-		"document_id": JSON.parse(documents["document_id"])
+		"document_id": doculist
 	  }
   }
   console.log(documentjson);
   var data = JSON.stringify(documentjson);
   var xhr = new XMLHttpRequest();
 xhr.withCredentials = true;
-
+​
 xhr.onreadystatechange = function() {
+    console.log("hii");
         if (this.readyState == 4 && this.status == 200) {
           document.getElementById("sign").style.display = "none";
-          var myList = document.getElementById('fooBar');
-          myList.innerHTML = '';
-          var listbtn = document.createElement("li");
-          var btn = document.createTextNode("Signatures Done");
-          var foo = document.getElementById("fooBar");
-          foo.appendChild(listbtn);
-          listbtn.appendChild(btn);
-
-
     console.log(this.responseText);}
-
+​
 };
-
+​
 xhr.open("POST", "http://localhost:9012/digisign/bulksigndocs");
-xhr.setRequestHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIiLCJwYXNzd29yZCI6InBhc3MifQ.jouO1S9Kk-_aYwesErRBTf0Di10XSWD2g70neWtGUoA");
+xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
 xhr.setRequestHeader("Content-Type", "application/json");
 xhr.setRequestHeader("Accept", "*/*");
-
-
+​
+​
 xhr.send(data);
-
-
+​
+​
 }
-
+​
 function CheckSigned(){
   documents = getParams(window.location.href);
   lender = documents['user'];
@@ -96,10 +93,10 @@ function CheckSigned(){
   var xhr = new XMLHttpRequest();
 xhr.withCredentials = true;
 xhr.open("POST", "http://localhost:9012/digisign/checkSigned");
-xhr.setRequestHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIiLCJwYXNzd29yZCI6InBhc3MifQ.jouO1S9Kk-_aYwesErRBTf0Di10XSWD2g70neWtGUoA  ");
+xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
 xhr.setRequestHeader("Content-Type", "application/json");
 xhr.setRequestHeader("Accept", "*/*");
-
+​
 xhr.send(data);
 xhr.onreadystatechange = function() {
     console.log("hii");
@@ -112,6 +109,6 @@ xhr.onreadystatechange = function() {
       document.getElementById("sign").style.display = "block";
     }
 };
-
+​
 }
 }

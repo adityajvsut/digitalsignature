@@ -14,7 +14,9 @@
       };
 
       documents = getParams(window.location.href);
-    var url = 'http://10.15.15.65:8000/'.concat(documents["document_id"]).concat('.pdf');
+      var version=1;
+    var url = 'http://localhost:8000/'.concat(documents["document_id"]).concat('.pdf')+"?v="+toString(version+1);
+    version +=1;
     
     // Loaded via <script> tag, create shortcut to access PDF.js exports.
     var pdfjsLib = window['pdfjs-dist/build/pdf'];

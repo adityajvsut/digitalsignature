@@ -85,9 +85,10 @@ $(document).ready(function(){
         //signed();
           }
       });
-      // $("#signsubmit").click(function(){
-      //   signed();
-      // });
+      $("#signsubmit").click(function(){
+        signed();
+        location.reload(true);
+      });
       
   });
 
@@ -131,7 +132,7 @@ $(document).ready(function(){
           }
       };
       xhr.open("POST", "http://localhost:9012/digisign/saveUserSignImage");
-      xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
+      xhr.setRequestHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIiLCJwYXNzd29yZCI6InBhc3MifQ.jouO1S9Kk-_aYwesErRBTf0Di10XSWD2g70neWtGUoA");
       xhr.setRequestHeader("Accept", "*/*");
       xhr.send(fd);
   }
@@ -167,7 +168,6 @@ $(document).ready(function(){
         if (this.readyState == 4 && this.status == 200) {
           console.log(this.responseText);
           if(this.responseText == "otp verified"){
-
             if(documents["sign_type"]=="mt"){
               document.getElementById("wrong_otp").style.display = "none";
               document.getElementById("verifyotp").style.display = "none";            
@@ -185,7 +185,7 @@ $(document).ready(function(){
       }    
     };
     xhr.open("POST", "http://localhost:9012/digisign/verifyotp");
-    xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
+    xhr.setRequestHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIiLCJwYXNzd29yZCI6InBhc3MifQ.jouO1S9Kk-_aYwesErRBTf0Di10XSWD2g70neWtGUoA");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("Accept", "*/*");
     xhr.send(data);
@@ -206,7 +206,7 @@ $(document).ready(function(){
         }        
     };
     xhr.open("POST", "http://localhost:9012/digisign/sendotp");
-    xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
+    xhr.setRequestHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIiLCJwYXNzd29yZCI6InBhc3MifQ.jouO1S9Kk-_aYwesErRBTf0Di10XSWD2g70neWtGUoA");
     xhr.setRequestHeader("Content-Type", "text/plain");
     xhr.setRequestHeader("Accept", "*/*");
     xhr.send(data);
@@ -248,7 +248,7 @@ $(document).ready(function(){
         }
     };
     xhr.open("POST", "http://localhost:9012/digisign/digisigndocs");
-    xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
+    xhr.setRequestHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIiLCJwYXNzd29yZCI6InBhc3MifQ.jouO1S9Kk-_aYwesErRBTf0Di10XSWD2g70neWtGUoA");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("Accept", "*/*");
     xhr.send(data);
@@ -279,7 +279,7 @@ $(document).ready(function(){
         }
     };
     xhr.open("POST", "http://localhost:9012/digisign/checkUserSigned");
-    xhr.setRequestHeader("Authorization", "Basic YWRtaW46cGFzc3dvcmQ=");
+    xhr.setRequestHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InVzZXIiLCJwYXNzd29yZCI6InBhc3MifQ.jouO1S9Kk-_aYwesErRBTf0Di10XSWD2g70neWtGUoA");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.setRequestHeader("Accept", "*/*");
     xhr.send(data);
